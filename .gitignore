@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.vscode/
+db/
+pgadmin/
+pgadmin_logs/
+.env

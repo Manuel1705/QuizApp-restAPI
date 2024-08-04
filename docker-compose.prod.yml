@@ -1,0 +1,46 @@
+services:
+    api:
+        build:
+            context: .
+            target: production
+        ports:
+            - 3000:3000
+        env_file:
+            - .env
+        networks:
+            - quizapp_network
+
+    db:
+        image: postgres:latest
+        restart: always
+        container_name: postgres
+        environment:
+            POSTGRES_DB: QuizApp
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: admin
+        volumes:
+            - "./db:/var/lib/postgresql/data"
+        ports:
+            - "5433:5432"
+        networks:
+            - quizapp_network
+
+    pgadmin:
+        image: dpage/pgadmin4:latest
+        restart: always
+        container_name: pgadmin
+        environment:
+            PGADMIN_DEFAULT_EMAIL: "quizapp@gmail.com"
+            PGADMIN_DEFAULT_PASSWORD: "quizapp"
+        user: "${UID}:${GID}"
+        volumes:
+            - "./pgadmin:/var/lib/pgadmin"
+            - "./pgadmin_logs:/var/log/pgadmin"
+        ports:
+            - "5050:80"
+        networks:
+            - quizapp_network
+
+networks:
+    quizapp_network:
+        driver: bridge
