@@ -41,7 +41,7 @@ export class QuestionAnswerController {
             QuizAttemptController.addError(req);
         }
         req.body.id = req.params.answerId;
-        req.body.QuestionId = req.params.questionId;
+        req.body.questionId = req.params.questionId;
         req.body.quizAttemptId = req.params.attemptId;
         return QuestionAnswer.create(req.body);
     }
