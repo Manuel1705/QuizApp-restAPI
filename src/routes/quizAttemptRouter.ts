@@ -1,7 +1,7 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction, response } from "express";
 import { CustomError } from "../utils/CustomError";
 import { QuizAttemptController } from "../controllers/QuizAttemptController";
-import { enforceAuth, ensureUsersModifyOnlyOwnQuizzes } from "../middlewares/auth";
+import { enforceAuth, ensureUsersModifyOnlyOwnQuizzes, ensureAttemptIsNotEnded } from "../middlewares/auth";
 
 export const quizAttemptRouter = express.Router();
 
@@ -38,6 +38,17 @@ quizAttemptRouter.get("/quizzes/:quizId/attempts/:attemptId",
             .catch((err: CustomError) => {
                 next({ status: err.status, message: err.message });
             });
+    });
+
+quizAttemptRouter.put("/quizzes/:quizId/attempts/:attemptId/end",
+    ensureAttemptIsNotEnded,
+    (req, res, next) => {
+        QuizAttemptController.end(req)
+            .then(() => {
+                res.json({ response: "Attempt ended" });
+            }).catch((err: CustomError) => {
+                next({ status: err.status, message: err.message });
+            })
     });
 
 quizAttemptRouter.delete("/quizzes/:quizId/attempts/:attemptId",

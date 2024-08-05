@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { AuthController } from "../controllers/AuthController";
 import { JwtPayload } from "jsonwebtoken";
 import { QuizController } from "../controllers/QuizController";
+import { QuizAttemptController } from "../controllers/QuizAttemptController";
 import { CustomError } from "../utils/CustomError";
 
 
@@ -63,6 +64,14 @@ export function ensureQuizIsNotPublished(req: authVerificationRequest, res: Resp
         .catch((err: CustomError) => {
             next({ status: err.status, message: err.message });
         });
+}
+
+export async function ensureAttemptIsNotEnded(req: Request, res: Response, next: NextFunction) {
+    const attempt = await QuizAttemptController.findById(req);
+    if (attempt.ended)
+        next({ status: 403, message: "Forbidden! This attempt has already ended" });
+    else
+        next();
 }
 
 

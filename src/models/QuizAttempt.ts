@@ -8,6 +8,7 @@ interface QuizAttemptAttributes {
     quizId: number;
     errors?: number;
     passed?: boolean;
+    ended?: boolean;
 }
 
 export class QuizAttempt extends Model<QuizAttemptAttributes> implements QuizAttemptAttributes {
@@ -16,6 +17,7 @@ export class QuizAttempt extends Model<QuizAttemptAttributes> implements QuizAtt
     public quizId!: number;
     public errors!: number;
     public passed!: boolean;
+    public ended!: boolean;
 }
 
 export function createModel(sequelize: Sequelize<PostgresDialect>): typeof QuizAttempt {
@@ -47,6 +49,11 @@ export function createModel(sequelize: Sequelize<PostgresDialect>): typeof QuizA
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true
+        },
+        ended: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
         }
     }, {
         sequelize,

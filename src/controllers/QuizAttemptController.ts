@@ -44,6 +44,12 @@ export class QuizAttemptController {
         return attempt.save();
     }
 
+    static async end(req: Request): Promise<QuizAttemptClass> {
+        const attempt = await this.findById(req);
+        attempt.ended = true;
+        return attempt.save();
+    }
+
 
     static async delete(req: Request): Promise<void> {
         const attempt = await this.findById(req);
