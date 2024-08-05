@@ -1,68 +1,68 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { CustomError } from '../utils/CustomError';
-import { OpenQuestionController } from '../controllers/OpenQuestionController';
+import { QuestionController } from '../controllers/QuestionController';
 import { enforceAuth, ensureUsersModifyOnlyOwnQuizzes, ensureQuizIsNotPublished } from '../middlewares/auth';
 
-export const openQuestionRouter = express.Router();
+export const QuestionRouter = express.Router();
 
-openQuestionRouter.post('/quizzes/:quizId/openQuestions',
+QuestionRouter.post('/quizzes/:quizId/questions',
     enforceAuth,
     ensureUsersModifyOnlyOwnQuizzes,
     ensureQuizIsNotPublished,
     (req: Request, res: Response, next: NextFunction) => {
-        OpenQuestionController.save(req)
-            .then((openQuestion) => {
-                res.json(openQuestion);
+        QuestionController.save(req)
+            .then((Question) => {
+                res.json(Question);
             })
             .catch((err: CustomError) => {
                 next({ status: err.status, message: err.message });
             });
     });
 
-openQuestionRouter.get('/quizzes/:quizId/openQuestions',
+QuestionRouter.get('/quizzes/:quizId/questions',
     (req: Request, res: Response, next: NextFunction) => {
-        OpenQuestionController.getByQuiz(req)
-            .then((openQuestions) => {
-                res.json(openQuestions);
+        QuestionController.getByQuiz(req)
+            .then((Questions) => {
+                res.json(Questions);
             })
             .catch((err: CustomError) => {
                 next({ status: err.status, message: err.message });
             });
     });
 
-openQuestionRouter.get('/quizzes/:quizId/openQuestions/:questionId',
+QuestionRouter.get('/quizzes/:quizId/questions/:questionId',
     (req: Request, res: Response, next: NextFunction) => {
-        OpenQuestionController.findById(req)
-            .then((openQuestion) => {
-                res.json(openQuestion);
+        QuestionController.findById(req)
+            .then((Question) => {
+                res.json(Question);
             })
             .catch((err: CustomError) => {
                 next({ status: err.status, message: err.message });
             });
     });
 
-openQuestionRouter.put('/quizzes/:quizId/openQuestions/:questionId',
+QuestionRouter.put('/quizzes/:quizId/questions/:questionId',
     enforceAuth,
     ensureUsersModifyOnlyOwnQuizzes,
     ensureQuizIsNotPublished,
     (req: Request, res: Response, next: NextFunction) => {
-        OpenQuestionController.update(req)
-            .then((openQuestion) => {
-                res.json({ response: 'Open question updated', openQuestion });
+        QuestionController.update(req)
+            .then((Question) => {
+                res.json({ response: 'Question updated', Question });
             })
             .catch((err: CustomError) => {
                 next({ status: err.status, message: err.message });
             });
     });
 
-openQuestionRouter.delete('/quizzes/:quizId/openQuestions/:questionId',
+QuestionRouter.delete('/quizzes/:quizId/questions/:questionId',
     enforceAuth,
     ensureUsersModifyOnlyOwnQuizzes,
     ensureQuizIsNotPublished,
     (req: Request, res: Response, next: NextFunction) => {
-        OpenQuestionController.delete(req)
+        QuestionController.delete(req)
             .then(() => {
-                res.json({ response: 'Open question deleted' });
+                res.json({ response: 'Question deleted' });
             })
             .catch((err: CustomError) => {
                 next({ status: err.status, message: err.message });

@@ -2,7 +2,7 @@ import { Sequelize, DataTypes, Model } from "@sequelize/core";
 import { PostgresDialect } from "@sequelize/postgres";
 import { Quiz } from "./Database";
 
-interface MultipleChoiceQuestionAttributes {
+interface QuestionAttributes {
     id?: number;
     question: string;
     answer1: string;
@@ -13,7 +13,7 @@ interface MultipleChoiceQuestionAttributes {
     quizId: number;
 }
 
-export class MultipleChoiceQuestion extends Model<MultipleChoiceQuestionAttributes> implements MultipleChoiceQuestionAttributes {
+export class Question extends Model<QuestionAttributes> implements QuestionAttributes {
     public id!: number;
     public question!: string;
     public answer1!: string;
@@ -24,8 +24,8 @@ export class MultipleChoiceQuestion extends Model<MultipleChoiceQuestionAttribut
     public quizId!: number;
 }
 
-export function createModel(sequelize: Sequelize<PostgresDialect>): typeof MultipleChoiceQuestion {
-    MultipleChoiceQuestion.init({
+export function createModel(sequelize: Sequelize<PostgresDialect>): typeof Question {
+    Question.init({
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -65,8 +65,8 @@ export function createModel(sequelize: Sequelize<PostgresDialect>): typeof Multi
         }
     }, {
         sequelize,
-        modelName: 'MultipleChoiceQuestion'
+        modelName: 'Question'
     });
 
-    return MultipleChoiceQuestion;
+    return Question;
 }

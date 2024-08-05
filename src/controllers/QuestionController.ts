@@ -1,31 +1,31 @@
 import { Request } from "express";
 import { CustomError } from "../utils/CustomError";
-import { OpenQuestion } from "../models/Database";
-import { OpenQuestion as OpenQuestionClass } from "../models/OpenQuestion";
+import { Question } from "../models/Database";
+import { Question as QuestionClass } from "../models/Question";
 
-export class OpenQuestionController {
+export class QuestionController {
 
-    static async findById(req: Request): Promise<OpenQuestionClass> {
-        const question = await OpenQuestion.findByPk(req.params.questionId);
+    static async findById(req: Request): Promise<QuestionClass> {
+        const question = await Question.findByPk(req.params.questionId);
         if (!question)
             throw new CustomError(404, 'The question does not exist');
         return question;
     }
 
-    static async getByQuiz(req: Request): Promise<OpenQuestionClass[]> {
-        return OpenQuestion.findAll({
+    static async getByQuiz(req: Request): Promise<QuestionClass[]> {
+        return Question.findAll({
             where: {
                 quizId: req.params.quizId
             }
         });
     }
 
-    static async save(req: Request): Promise<OpenQuestionClass> {
+    static async save(req: Request) {
         req.body.quizId = req.params.quizId;
-        return OpenQuestion.create(req.body);
+        return Question.create(req.body) as Promise<QuestionClass>;
     }
 
-    static async update(req: Request): Promise<OpenQuestionClass> {
+    static async update(req: Request): Promise<QuestionClass> {
         const question = await this.findById(req);
         question.set(req.body);
         return question.save();
@@ -35,4 +35,5 @@ export class OpenQuestionController {
         const question = await this.findById(req);
         return question.destroy();
     }
+
 }

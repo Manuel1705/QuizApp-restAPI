@@ -1,35 +1,35 @@
 import { Request } from "express";
 import { CustomError } from "../utils/CustomError";
-import { MultipleChoiceQuestionAnswer } from "../models/Database";
-import { MultipleChoiceQuestionAnswer as MultipleChoiceQuestionAnswerClass } from "../models/MultipleChoiceQuestionAnswer";
-import { MultipleChoiceQuestionController } from "./MultipleChoiceQuestionController";
+import { QuestionAnswer } from "../models/Database";
+import { QuestionAnswer as QuestionAnswerClass } from "../models/QuestionAnswer";
+import { QuestionController } from "./QuestionController";
 import { QuizAttemptController } from "./QuizAttemptController";
 
-export class MultipleChoiceQuestionAnswerController {
+export class QuestionAnswerController {
 
-    static async findById(req: Request): Promise<MultipleChoiceQuestionAnswerClass> {
-        const answer = await MultipleChoiceQuestionAnswer.findByPk(req.params.answerId);
+    static async findById(req: Request): Promise<QuestionAnswerClass> {
+        const answer = await QuestionAnswer.findByPk(req.params.answerId);
         if (!answer)
             throw new CustomError(404, 'The answer does not exist');
         return answer;
     }
 
     static async isCorrect(req: Request): Promise<Boolean> {
-        const question = await MultipleChoiceQuestionController.findById(req);
+        const question = await QuestionController.findById(req);
         return req.body.answer === question.correctAnswer;
     }
 
     static async isAlreadyAnswered(req: Request): Promise<Boolean> {
-        const answers: MultipleChoiceQuestionAnswerClass[] = await MultipleChoiceQuestionAnswer.findAll({
+        const answers: QuestionAnswerClass[] = await QuestionAnswer.findAll({
             where: {
                 quizAttemptId: req.params.attemptId,
-                multipleChoiceQuestionId: req.params.questionId
+                questionId: req.params.questionId
             }
         });
         return answers.length > 0;
     }
 
-    static async save(req: Request): Promise<MultipleChoiceQuestionAnswerClass> {
+    static async save(req: Request): Promise<QuestionAnswerClass> {
         if (await this.isAlreadyAnswered(req)) {
             throw new CustomError(400, 'The question has already been answered');
         }
@@ -41,8 +41,8 @@ export class MultipleChoiceQuestionAnswerController {
             QuizAttemptController.addError(req);
         }
         req.body.id = req.params.answerId;
-        req.body.multipleChoiceQuestionId = req.params.questionId;
+        req.body.QuestionId = req.params.questionId;
         req.body.quizAttemptId = req.params.attemptId;
-        return MultipleChoiceQuestionAnswer.create(req.body);
+        return QuestionAnswer.create(req.body);
     }
 }

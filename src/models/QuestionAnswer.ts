@@ -1,25 +1,25 @@
 import { Sequelize, DataTypes, Model } from "@sequelize/core";
 import { PostgresDialect } from "@sequelize/postgres";
-import { OpenQuestion, QuizAttempt } from "./Database";
+import { Question, QuizAttempt } from "./Database";
 
-interface OpenQuestionAnswerAttributes {
+interface QuestionAnswerAttributes {
     id?: number;
     answer: string;
     correct: boolean;
-    openQuestionId: number;
+    questionId: number;
     quizAttemptId: number;
 }
 
-export class OpenQuestionAnswer extends Model<OpenQuestionAnswerAttributes> implements OpenQuestionAnswerAttributes {
+export class QuestionAnswer extends Model<QuestionAnswerAttributes> implements QuestionAnswerAttributes {
     public id!: number;
     public answer!: string;
     public correct!: boolean;
-    public openQuestionId!: number;
+    public questionId!: number;
     public quizAttemptId!: number;
 }
 
-export function createModel(sequelize: Sequelize<PostgresDialect>): typeof OpenQuestionAnswer {
-    OpenQuestionAnswer.init({
+export function createModel(sequelize: Sequelize<PostgresDialect>): typeof QuestionAnswer {
+    QuestionAnswer.init({
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
@@ -33,11 +33,11 @@ export function createModel(sequelize: Sequelize<PostgresDialect>): typeof OpenQ
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
-        openQuestionId: {
+        questionId: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: OpenQuestion,
+                model: Question,
                 key: 'id'
             }
         },
@@ -51,8 +51,8 @@ export function createModel(sequelize: Sequelize<PostgresDialect>): typeof OpenQ
         }
     }, {
         sequelize,
-        modelName: 'OpenQuestionAnswer'
+        modelName: 'QuestionAnswer'
     });
 
-    return OpenQuestionAnswer;
+    return QuestionAnswer;
 }
